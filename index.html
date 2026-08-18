@@ -754,8 +754,8 @@ function renderShop(){
     orders.map(orderEmailRow).join('') +
     `<div class="list-divider">✉️ Newsletters you subscribe to</div>` +
     newsEmails.map(newsEmailRow).join('');
-  // Sponsored: inject native ad in the middle of deals
-  document.getElementById('deals').innerHTML = dealCard(deals[0]) + dealCard(deals[1]) + nativeCard(nativeAd) + dealCard(deals[2]);
+  // Sponsored: 3 cards total — native ad centered between two deals
+  document.getElementById('deals').innerHTML = dealCard(deals[0]) + nativeCard(nativeAd) + dealCard(deals[1]);
   document.getElementById('news').innerHTML = news.map(newsCard).join('');
 }
 
