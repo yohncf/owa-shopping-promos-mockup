@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Outlook — Shopping &amp; Promos</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+  /* Outlook brand palette (product chrome) */
+  --owa-blue: #0078d4;
+  --owa-blue-dark: #106ebe;
+  --owa-blue-darker: #005a9e;
+  --owa-rail: #faf9f8;
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+  --owa-blue: #0078d4;
+  --owa-blue-dark: #2b88d8;
+  --owa-blue-darker: #4da6ff;
+  --owa-rail: #201f1e;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-size: 14px;
+  overflow: hidden;
+}
+.card-shadow { box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14); }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+img { display: block; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: var(--cp-border-strong); border-radius: 6px; border: 2px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ============ APP SHELL ============ */
+.app { display: flex; flex-direction: column; height: 100vh; }
+
+/* Header */
+.header {
+  height: 48px;
+  background: var(--owa-blue);
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  gap: 4px;
+  color: #fff;
+  flex-shrink: 0;
+  z-index: 40;
+}
+.hdr-btn {
+  width: 48px; height: 48px; display: grid; place-items: center;
+  color: #fff; border-radius: 4px; transition: background .15s;
+}
+.hdr-btn:hover { background: rgba(255,255,255,0.15); }
+.grid-icon { display: grid; grid-template-columns: repeat(3,4px); grid-template-rows: repeat(3,4px); gap: 2px; }
+.grid-icon span { width: 4px; height: 4px; background: #fff; border-radius: 1px; }
+.owa-logo { display: flex; align-items: center; gap: 8px; padding: 0 10px 0 6px; font-weight: 600; font-size: 18px; letter-spacing: .2px; }
+.owa-logo .mark { width: 22px; height: 22px; background: #fff; border-radius: 4px; display: grid; place-items: center; color: var(--owa-blue); font-weight: 800; font-size: 15px; }
+.search-wrap { flex: 1; max-width: 640px; margin: 0 auto; position: relative; }
+.search-box {
+  width: 100%; height: 34px; border-radius: 6px; border: none;
+  background: rgba(255,255,255,0.92); padding: 0 14px 0 38px; font-size: 14px; color: var(--cp-text);
+  outline: none;
+}
+.search-box::placeholder { color: var(--cp-text-soft); }
+.search-ico { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--owa-blue-dark); font-size: 16px; }
+.hdr-right { display: flex; align-items: center; margin-left: auto; }
+.avatar {
+  width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg,#e64980,#b11f4b);
+  color: #fff; display: grid; place-items: center; font-weight: 600; font-size: 13px; margin: 0 8px 0 4px; border: 2px solid rgba(255,255,255,.5);
+}
+.badge-dot { position: relative; }
+.badge-dot::after { content: ""; position: absolute; top: 10px; right: 12px; width: 8px; height: 8px; background: #e81123; border-radius: 50%; border: 1.5px solid var(--owa-blue); }
+
+/* Body layout */
+.body { flex: 1; display: flex; min-height: 0; }
+
+/* Nav rail */
+.rail {
+  width: 56px; background: var(--owa-rail); border-right: 1px solid var(--cp-border);
+  display: flex; flex-direction: column; align-items: center; padding-top: 8px; gap: 4px; flex-shrink: 0;
+}
+.rail-btn {
+  width: 40px; height: 40px; border-radius: 6px; display: grid; place-items: center;
+  color: var(--cp-text-muted); font-size: 20px; position: relative; transition: background .15s;
+}
+.rail-btn:hover { background: var(--cp-accent-soft); }
+.rail-btn.active { color: var(--owa-blue); }
+.rail-btn.active::before { content:""; position:absolute; left:-8px; top:8px; bottom:8px; width:3px; background: var(--owa-blue); border-radius:2px; }
+.rail-btn .cnt { position:absolute; top:2px; right:2px; background: var(--owa-blue); color:#fff; font-size:9px; padding:1px 4px; border-radius:8px; font-weight:600; }
+
+/* Folder pane */
+.folders {
+  width: 240px; background: var(--cp-bg-elevated); border-right: 1px solid var(--cp-border);
+  padding: 10px; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; overflow-y: auto;
+}
+.new-mail {
+  background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: 6px;
+  padding: 8px 12px; display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--owa-blue);
+  align-self: flex-start; width: 100%;
+}
+.new-mail:hover { background: var(--cp-surface-soft); }
+.fav-title { font-size: 12px; color: var(--cp-text-soft); font-weight: 600; padding: 6px 8px 2px; }
+.folder-item {
+  display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 6px;
+  color: var(--cp-text); font-size: 14px; transition: background .12s;
+}
+.folder-item:hover { background: var(--cp-surface-soft); }
+.folder-item.active { background: var(--cp-accent-soft); font-weight: 600; }
+.folder-item .ico { width: 18px; text-align: center; opacity: .85; }
+.folder-item .count { margin-left: auto; font-size: 12px; color: var(--cp-text-soft); }
+.folder-item .count.hot { background: var(--owa-blue); color:#fff; padding:0 6px; border-radius:9px; font-weight:600; }
+
+/* Center + reading region */
+.workspace { flex: 1; display: flex; min-width: 0; }
+
+/* Message list column */
+.listcol { width: 380px; border-right: 1px solid var(--cp-border); display: flex; flex-direction: column; background: var(--cp-bg-elevated); flex-shrink: 0; min-width: 0; }
+.listcol.wide { flex: 1; width: auto; }
+
+.tabs { display: flex; align-items: center; gap: 4px; padding: 10px 12px 0; border-bottom: 1px solid var(--cp-border); }
+.tab {
+  padding: 8px 14px; font-size: 14px; font-weight: 600; color: var(--cp-text-muted);
+  border-bottom: 2px solid transparent; position: relative; white-space: nowrap;
+}
+.tab:hover { color: var(--cp-text); }
+.tab.active { color: var(--owa-blue); border-bottom-color: var(--owa-blue); }
+.tab.promo {
+  color: #fff; border-radius: 8px 8px 0 0; margin-left: 4px;
+  background: linear-gradient(120deg,#ff7a18,#e91e63 45%,#b11f4b);
+  border-bottom: none; box-shadow: 0 0 0 0 rgba(233,30,99,.5);
+  animation: glowpulse 2.4s ease-in-out infinite;
+}
+.tab.promo.active { color:#fff; }
+.tab.promo .spark { font-size: 12px; }
+@keyframes glowpulse {
+  0%,100% { box-shadow: 0 0 6px rgba(233,30,99,.45), 0 0 2px rgba(255,122,24,.5); transform: translateY(0); }
+  50% { box-shadow: 0 0 16px rgba(233,30,99,.85), 0 0 6px rgba(255,122,24,.7); transform: translateY(-1px); }
+}
+
+.list-toolbar { display: flex; align-items: center; gap: 12px; padding: 8px 14px; font-size: 13px; color: var(--cp-text-soft); border-bottom: 1px solid var(--cp-border); }
+.list-toolbar .grow { flex: 1; font-weight: 600; color: var(--cp-text); }
+
+/* Standard mail rows */
+.mail-scroll { overflow-y: auto; flex: 1; }
+.mail-row { display: flex; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--cp-border); cursor: pointer; position: relative; }
+.mail-row:hover { background: var(--cp-surface-soft); }
+.mail-row.unread { background: var(--cp-surface); }
+.mail-row.unread::before { content:""; position:absolute; left:5px; top:16px; width:7px; height:7px; border-radius:50%; background: var(--owa-blue); }
+.mail-av { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center; color:#fff; font-weight:600; font-size:13px; }
+.mail-main { flex: 1; min-width: 0; }
+.mail-line1 { display: flex; align-items: baseline; gap: 6px; }
+.mail-from { font-weight: 600; color: var(--cp-text); }
+.unread .mail-from { color: var(--owa-blue-darker); }
+.mail-time { margin-left: auto; font-size: 12px; color: var(--cp-text-soft); flex-shrink: 0; }
+.mail-subj { font-size: 13px; color: var(--cp-text); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.unread .mail-subj { font-weight: 600; }
+.mail-prev { font-size: 12px; color: var(--cp-text-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+
+/* ============ SHOPPING DASHBOARD ============ */
+.shop-scroll { overflow-y: auto; flex: 1; padding: 0 0 40px; }
+.shop-inner { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+
+/* Top banner ad */
+.banner {
+  position: relative; margin: 16px 20px 4px; height: 132px; border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--cp-border); background:#000;
+}
+.banner .slide { position: absolute; inset: 0; opacity: 0; transition: opacity .9s ease; }
+.banner .slide.on { opacity: 1; }
+.banner .slide img { width: 100%; height: 100%; object-fit: cover; filter: brightness(.62); }
+.banner .cap { position: absolute; inset: 0; padding: 20px 26px; display: flex; flex-direction: column; justify-content: center; color: #fff; }
+.banner .adtag { position: absolute; top: 10px; right: 12px; background: rgba(0,0,0,.55); color:#fff; font-size:10px; padding:2px 7px; border-radius:4px; letter-spacing:.5px; }
+.banner .k { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; opacity: .9; }
+.banner .h { font-size: 24px; font-weight: 800; margin: 4px 0 8px; text-shadow: 0 2px 8px rgba(0,0,0,.5); max-width: 60%; }
+.banner .cta { align-self: flex-start; background: #fff; color: #111; font-weight: 700; padding: 8px 18px; border-radius: 20px; font-size: 13px; }
+.banner .cta:hover { background: var(--cp-accent); color:#fff; }
+.banner .play { position:absolute; bottom:12px; right:14px; display:flex; align-items:center; gap:6px; font-size:11px; color:#fff; background:rgba(0,0,0,.4); padding:4px 8px; border-radius:12px; }
+.banner .live { width:7px;height:7px;border-radius:50%;background:#ff2d55; animation: blink 1.2s infinite; }
+@keyframes blink { 50% { opacity:.2; } }
+.banner .dots { position:absolute; bottom:12px; left:26px; display:flex; gap:6px; }
+.banner .dots i { width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.5);cursor:pointer; }
+.banner .dots i.on { background:#fff; width:18px; border-radius:4px; }
+
+/* Section headers */
+.sec-head { display: flex; align-items: center; gap: 10px; margin: 24px 0 12px; }
+.sec-head .t { font-size: 17px; font-weight: 800; }
+.sec-head .ico { font-size: 18px; }
+.sec-head .pill { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 12px; }
+.pill-orange { background: rgba(245,158,11,.16); color: #b45309; }
+.pill-pink { background: var(--cp-accent-soft); color: var(--cp-accent); }
+.pill-green { background: rgba(22,163,74,.14); color: var(--cp-success); }
+html[data-theme="dark"] .pill-orange { color: #fbbf24; }
+.sec-head .more { margin-left: auto; font-size: 12px; color: var(--cp-link); font-weight: 600; }
+
+/* Card grid */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.shop-card {
+  background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: 16px; overflow: hidden;
+  display: flex; flex-direction: column; transition: transform .18s ease, box-shadow .18s ease, border-color .18s;
+  cursor: pointer; box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+}
+.shop-card:hover { transform: translateY(-4px); box-shadow: var(--cp-shadow); border-color: var(--cp-accent); }
+.card-media { position: relative; height: 156px; overflow: hidden; background: var(--cp-surface-soft); }
+.card-media img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.shop-card:hover .card-media img { transform: scale(1.06); }
+.brand-chip { position: absolute; top: 10px; left: 10px; display: flex; align-items: center; gap: 6px; background: var(--cp-panel-strong); padding: 3px 9px 3px 3px; border-radius: 20px; font-size: 11px; font-weight: 600; backdrop-filter: blur(4px); }
+.brand-chip .lg { width: 20px; height: 20px; border-radius: 50%; display:grid; place-items:center; color:#fff; font-size:11px; font-weight:700; }
+.deal-flag { position: absolute; top: 10px; right: 10px; background: var(--cp-danger); color:#fff; font-size:11px; font-weight:700; padding: 3px 8px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,.25); }
+.card-body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.card-subj { font-weight: 700; font-size: 14px; line-height: 1.3; }
+.card-prev { font-size: 12px; color: var(--cp-text-soft); line-height: 1.4; }
+.card-foot { margin-top: auto; display: flex; align-items: center; gap: 8px; padding-top: 4px; }
+.btn {
+  border-radius: 8px; padding: 8px 12px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; transition: transform .12s, filter .12s;
+}
+.btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+.btn:active { transform: translateY(0); }
+.btn-primary { background: var(--owa-blue); color: #fff; }
+.btn-deal { background: linear-gradient(120deg,#ff7a18,#e91e63); color:#fff; }
+.btn-ghost { background: var(--cp-surface-soft); color: var(--cp-text); border: 1px solid var(--cp-border); }
+.time-tag { margin-left: auto; font-size: 11px; color: var(--cp-text-soft); }
+
+/* progress bar for tracking */
+.track { display: flex; flex-direction: column; gap: 5px; }
+.track-row { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--cp-text-soft); }
+.track-row b { color: var(--cp-success); font-weight: 700; }
+.bar { height: 6px; background: var(--cp-surface-soft); border-radius: 4px; overflow: hidden; }
+.bar > i { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--cp-success), #4ade80); position: relative; animation: fill 1.4s ease forwards; }
+@keyframes fill { from { width: 0; } }
+
+/* countdown for deals */
+.countdown { display:flex; gap:5px; align-items:center; font-size:11px; color:var(--cp-danger); font-weight:700; }
+.countdown .u { background: var(--cp-accent-soft); color: var(--cp-accent); padding: 1px 6px; border-radius: 5px; font-variant-numeric: tabular-nums; }
+
+/* Native in-feed ad */
+.shop-card.native { border: 1px dashed var(--cp-accent); position: relative; }
+.shop-card.native::after { content:""; position:absolute; inset:0; border-radius:16px; pointer-events:none; box-shadow: inset 0 0 0 2px var(--cp-accent-soft); }
+.sponsor-tag { position:absolute; top:10px; right:10px; background: rgba(0,0,0,.7); color:#ffd54f; font-size:10px; font-weight:700; padding:3px 8px; border-radius:5px; letter-spacing:.5px; z-index:2; }
+.native .card-subj::before { content:"⚡ "; }
+
+/* Personal "Active Orders" panel — clearly YOURS, not an ad */
+.orders-panel {
+  margin: 26px 0 8px; padding: 16px 18px 20px; border-radius: 18px;
+  background: linear-gradient(180deg, rgba(0,120,212,0.10), rgba(0,120,212,0.03));
+  border: 1.5px solid var(--owa-blue);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4), 0 2px 10px rgba(0,120,212,0.10);
+  position: relative;
+}
+html[data-theme="dark"] .orders-panel { background: linear-gradient(180deg, rgba(0,120,212,0.22), rgba(0,120,212,0.06)); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04); }
+.orders-panel .op-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.orders-panel .op-head .avatar-you { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg,#e64980,#b11f4b); color:#fff; display:grid; place-items:center; font-weight:700; font-size:12px; border:2px solid #fff; box-shadow:0 1px 3px rgba(0,0,0,.2); }
+.orders-panel .op-head .t { font-size: 17px; font-weight: 800; }
+.orders-panel .op-head .yours { background: var(--owa-blue); color:#fff; font-size:11px; font-weight:700; padding:3px 10px; border-radius:12px; display:flex; align-items:center; gap:4px; }
+.orders-panel .op-head .no-ads { margin-left:auto; font-size:11px; color:var(--cp-text-soft); font-weight:600; display:flex; align-items:center; gap:5px; }
+.orders-panel .op-sub { font-size:12px; color:var(--cp-text-soft); margin: 0 0 14px 40px; }
+.orders-panel .grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+/* order cards inside panel get a personal accent, no ad-like dashed borders */
+.order-card { border-color: rgba(0,120,212,0.35) !important; }
+.order-card .card-media::after { content:"YOUR ORDER"; position:absolute; bottom:8px; left:10px; background: var(--owa-blue); color:#fff; font-size:9px; font-weight:800; letter-spacing:.6px; padding:2px 7px; border-radius:4px; }
+
+/* Newsletter emails that still look like real emails */
+.email-list { display: flex; flex-direction: column; background: var(--cp-surface); border:1px solid var(--cp-border); border-radius: 14px; overflow: hidden; box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14); }
+.email-item { display:flex; gap:12px; padding: 14px 16px; border-bottom:1px solid var(--cp-border); cursor:pointer; align-items:flex-start; transition: background .12s; position:relative; }
+.email-item:last-child { border-bottom:none; }
+.email-item:hover { background: var(--cp-surface-soft); }
+.email-item.unread { background: var(--cp-accent-soft); }
+.email-item.unread::before { content:""; position:absolute; left:6px; top:20px; width:8px; height:8px; border-radius:50%; background: var(--owa-blue); }
+.email-item .e-av { width:40px; height:40px; border-radius:50%; flex-shrink:0; display:grid; place-items:center; color:#fff; font-weight:700; font-size:15px; }
+.email-item .e-main { flex:1; min-width:0; }
+.email-item .e-l1 { display:flex; align-items:baseline; gap:8px; }
+.email-item .e-from { font-weight:700; font-size:14px; }
+.email-item.unread .e-from { color: var(--owa-blue-darker); }
+.email-item .e-time { margin-left:auto; font-size:12px; color:var(--cp-text-soft); flex-shrink:0; }
+.email-item .e-subj { font-size:13px; font-weight:600; margin-top:2px; }
+.email-item .e-prev { font-size:12px; color:var(--cp-text-soft); margin-top:2px; line-height:1.4; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+.email-item .e-thumb { width:56px; height:56px; border-radius:8px; object-fit:cover; flex-shrink:0; }
+.email-item .e-tags { display:flex; gap:6px; margin-top:6px; }
+.email-item .e-tag { font-size:10px; font-weight:700; padding:2px 7px; border-radius:5px; background: var(--cp-surface-soft); color:var(--cp-text-soft); border:1px solid var(--cp-border); }
+
+/* Right skyscraper sidebar */
+.sky { width: 320px; border-left: 1px solid var(--cp-border); background: var(--cp-bg-elevated); flex-shrink: 0; overflow-y: auto; padding: 16px 14px 40px; display: none; }
+.sky.show { display: block; }
+.sky-lbl { font-size: 10px; letter-spacing: 1px; color: var(--cp-text-soft); text-transform: uppercase; margin: 4px 2px 8px; display:flex; align-items:center; gap:6px; }
+.sky-lbl::after { content:"Ad"; margin-left:auto; background: var(--cp-surface-soft); padding:1px 6px; border-radius:4px; font-size:9px; }
+.ad-unit { border: 1px solid var(--cp-border); border-radius: 14px; overflow: hidden; margin-bottom: 18px; background: var(--cp-surface); transition: transform .18s, box-shadow .18s; }
+.ad-unit:hover { transform: scale(1.015); box-shadow: 0 0 0 2px var(--cp-accent-soft), var(--cp-shadow); }
+.ad-hero { height: 150px; position: relative; }
+.ad-hero img { width: 100%; height: 100%; object-fit: cover; }
+.ad-hero .ov { position:absolute; inset:0; background:linear-gradient(180deg,transparent,rgba(0,0,0,.7)); display:flex; align-items:flex-end; padding:12px; }
+.ad-hero .ov b { color:#fff; font-size:15px; text-shadow:0 1px 4px rgba(0,0,0,.6); }
+.ad-body { padding: 12px 14px; }
+.ad-body p { margin: 0 0 10px; font-size: 12px; color: var(--cp-text-soft); }
+.ad-cta { width: 100%; justify-content: center; }
+
+/* interactive carousel ad */
+.carousel { position: relative; }
+.car-track { display: flex; transition: transform .35s ease; }
+.car-slide { min-width: 100%; }
+.car-slide img { width: 100%; height: 150px; object-fit: cover; }
+.car-info { padding: 10px 12px; display:flex; align-items:center; gap:8px; }
+.car-info .nm { font-size: 13px; font-weight: 700; }
+.car-info .pr { color: var(--cp-accent); font-weight: 800; font-size: 14px; }
+.car-info .old { text-decoration: line-through; color: var(--cp-text-soft); font-size:11px; }
+.car-nav { position:absolute; top:60px; width:28px; height:28px; border-radius:50%; background:var(--cp-panel-strong); display:grid; place-items:center; box-shadow:0 2px 6px rgba(0,0,0,.2); font-size:14px; }
+.car-nav.prev { left:8px; } .car-nav.next { right:8px; }
+.car-dots { display:flex; gap:5px; justify-content:center; padding:0 0 10px; }
+.car-dots i { width:6px;height:6px;border-radius:50%;background:var(--cp-border-strong);cursor:pointer; }
+.car-dots i.on { background: var(--cp-accent); width:16px; border-radius:3px; }
+
+/* Reading pane overlay */
+.reader {
+  position: fixed; inset: 0; background: rgba(0,0,0,.35); backdrop-filter: blur(2px);
+  display: none; align-items: stretch; justify-content: flex-end; z-index: 60;
+}
+.reader.open { display: flex; animation: fadein .2s ease; }
+@keyframes fadein { from { opacity: 0; } }
+.reader-pane {
+  width: min(720px, 92vw); background: var(--cp-surface); height: 100%; overflow-y: auto;
+  box-shadow: var(--cp-shadow); animation: slidein .28s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes slidein { from { transform: translateX(40px); opacity: .4; } }
+.reader-top { position: sticky; top: 0; background: var(--cp-surface); border-bottom: 1px solid var(--cp-border); padding: 14px 20px; display: flex; align-items: center; gap: 10px; z-index: 2; }
+.reader-top .r-subj { font-size: 18px; font-weight: 800; flex:1; }
+.reader-close { width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center; font-size: 20px; color: var(--cp-text-muted); }
+.reader-close:hover { background: var(--cp-surface-soft); }
+.reader-meta { display:flex; align-items:center; gap:10px; padding: 14px 20px; border-bottom:1px solid var(--cp-border); }
+.reader-body { padding: 0; }
+.r-hero { width:100%; height: 260px; object-fit: cover; }
+.r-content { padding: 22px 26px 40px; }
+.r-content h2 { margin: 0 0 6px; font-size: 22px; }
+.r-content p { color: var(--cp-text-muted); line-height: 1.6; }
+.receipt { border:1px solid var(--cp-border); border-radius: 12px; overflow:hidden; margin-top: 16px; }
+.receipt .rr { display:flex; justify-content:space-between; padding: 12px 16px; border-bottom:1px solid var(--cp-border); }
+.receipt .rr:last-child { border-bottom:none; font-weight:800; font-size:16px; background: var(--cp-surface-soft); }
+.receipt .prod { display:flex; align-items:center; gap:12px; }
+.receipt .prod img { width:48px;height:48px;border-radius:8px;object-fit:cover; }
+.r-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top: 20px; }
+.r-btn { flex:1; min-width: 140px; justify-content:center; padding: 12px; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--cp-text); color: var(--cp-bg); padding: 12px 20px; border-radius: 10px; font-weight: 600;
+  box-shadow: var(--cp-shadow); opacity: 0; pointer-events: none; transition: all .25s; z-index: 90; font-size:13px;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Empty reading pane (standard mail) */
+.empty-read { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--cp-text-soft); gap:12px; background: var(--cp-bg); }
+.empty-read .big { font-size: 60px; opacity:.5; }
+
+@media (max-width: 1180px) { .sky { display: none !important; } }
+@media (max-width: 900px) { .folders { display:none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <button class="hdr-btn" title="App launcher"><span class="grid-icon"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></button>
+    <div class="owa-logo"><span class="mark">O</span> Outlook</div>
+    <div class="search-wrap">
+      <span class="search-ico">🔍</span>
+      <input class="search-box" placeholder="Search mail, people, and more" />
+    </div>
+    <div class="hdr-right">
+      <button class="hdr-btn" title="Try premium">💎</button>
+      <button class="hdr-btn badge-dot" title="Notifications">🔔</button>
+      <button class="hdr-btn" title="Settings">⚙️</button>
+      <button class="hdr-btn" title="Help">❔</button>
+      <div class="avatar" title="Yohnathan C.">YC</div>
+    </div>
+  </header>
+
+  <div class="body">
+    <!-- ===== NAV RAIL ===== -->
+    <nav class="rail">
+      <button class="rail-btn active" title="Mail">✉️<span class="cnt">12</span></button>
+      <button class="rail-btn" title="Calendar">📅</button>
+      <button class="rail-btn" title="People">👥</button>
+      <button class="rail-btn" title="To Do">✅</button>
+      <button class="rail-btn" title="Files">📁</button>
+      <div style="flex:1"></div>
+      <button class="rail-btn" title="Apps">⋯</button>
+    </nav>
+
+    <!-- ===== FOLDER PANE ===== -->
+    <aside class="folders">
+      <button class="new-mail">✏️ New mail</button>
+      <div class="fav-title">Favorites</div>
+      <div class="folder-item active"><span class="ico">📥</span> Inbox <span class="count hot">12</span></div>
+      <div class="folder-item"><span class="ico">📤</span> Sent Items</div>
+      <div class="folder-item"><span class="ico">📝</span> Drafts <span class="count">3</span></div>
+      <div class="folder-item"><span class="ico">🛍️</span> Shopping <span class="count hot">28</span></div>
+      <div class="fav-title">Folders</div>
+      <div class="folder-item"><span class="ico">📥</span> Inbox</div>
+      <div class="folder-item"><span class="ico">🗂️</span> Archive</div>
+      <div class="folder-item"><span class="ico">⚠️</span> Junk Email</div>
+      <div class="folder-item"><span class="ico">🗑️</span> Deleted Items</div>
+      <div class="folder-item"><span class="ico">📌</span> Notes</div>
+      <div class="folder-item"><span class="ico">⚙️</span> Conversation History</div>
+    </aside>
+
+    <!-- ===== WORKSPACE ===== -->
+    <section class="workspace">
+      <div class="listcol" id="listcol">
+        <div class="tabs">
+          <button class="tab active" data-view="focused" onclick="switchView('focused')">Focused</button>
+          <button class="tab" data-view="other" onclick="switchView('other')">Other</button>
+          <button class="tab promo" data-view="shop" onclick="switchView('shop')"><span class="spark">✨</span> Shopping &amp; Promos</button>
+        </div>
+
+        <!-- STANDARD LIST -->
+        <div id="std-list" style="display:flex; flex-direction:column; flex:1; min-height:0;">
+          <div class="list-toolbar"><span class="grow">Focused</span> <span>Filter ⌄</span></div>
+          <div class="mail-scroll" id="std-rows"></div>
+        </div>
+
+        <!-- SHOPPING DASHBOARD -->
+        <div id="shop-dash" style="display:none; flex:1; min-height:0;">
+          <div class="shop-scroll">
+            <!-- Top banner ad -->
+            <div class="banner" id="banner">
+              <span class="adtag">AD</span>
+              <div class="play"><span class="live"></span> Ad · 0:15</div>
+              <div class="dots" id="bannerDots"></div>
+            </div>
+
+            <div class="shop-inner">
+              <!-- ACTIVE ORDERS — personal panel, clearly the user's own -->
+              <div class="orders-panel">
+                <div class="op-head">
+                  <span class="avatar-you">YC</span>
+                  <span class="t">Active Orders</span>
+                  <span class="yours">👤 Yours</span>
+                  <span class="pill pill-green">3 in transit</span>
+                  <span class="no-ads">🔒 From your account · No ads</span>
+                </div>
+                <p class="op-sub">Purchases tied to yohnathan@outlook.com — tracked automatically from your receipts.</p>
+                <div class="grid" id="orders"></div>
+              </div>
+
+              <!-- DAILY DEALS -->
+              <div class="sec-head">
+                <span class="ico">🔥</span><span class="t">Daily Deals</span>
+                <span class="pill pill-orange">Ends soon</span>
+                <span class="more">Browse deals →</span>
+              </div>
+              <div class="grid" id="deals"></div>
+
+              <!-- NEWSLETTER EMAILS — still look like emails -->
+              <div class="sec-head">
+                <span class="ico">✉️</span><span class="t">Newsletter Inbox</span>
+                <span class="pill pill-pink">4 unread</span>
+                <span class="more">View as list →</span>
+              </div>
+              <div class="email-list" id="newsEmails"></div>
+
+              <!-- NEWSLETTERS (rich cards) -->
+              <div class="sec-head">
+                <span class="ico">📰</span><span class="t">Featured Reads</span>
+                <span class="pill pill-pink">14 unread</span>
+                <span class="more">Manage subscriptions →</span>
+              </div>
+              <div class="grid" id="news"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reading region for standard mail -->
+      <div class="empty-read" id="emptyRead">
+        <div class="big">✉️</div>
+        <div>Select an item to read</div>
+        <div style="font-size:12px;">Nothing is selected</div>
+      </div>
+
+      <!-- Right skyscraper ads (shopping mode) -->
+      <aside class="sky" id="sky">
+        <div class="sky-lbl">Featured shop</div>
+        <div class="ad-unit carousel">
+          <div style="overflow:hidden;">
+            <div class="car-track" id="carTrack">
+              <div class="car-slide"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=70" alt="Sneakers"><div class="car-info"><span class="nm">AirFlex Runner</span><span class="pr">$79</span><span class="old">$129</span></div></div>
+              <div class="car-slide"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=70" alt="Watch"><div class="car-info"><span class="nm">Pulse Smartwatch</span><span class="pr">$149</span><span class="old">$219</span></div></div>
+              <div class="car-slide"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=70" alt="Headphones"><div class="car-info"><span class="nm">Studio Buds Pro</span><span class="pr">$99</span><span class="old">$179</span></div></div>
+              <div class="car-slide"><img src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=600&q=70" alt="Shoe"><div class="car-info"><span class="nm">Trail Blazer X</span><span class="pr">$88</span><span class="old">$140</span></div></div>
+            </div>
+          </div>
+          <button class="car-nav prev" onclick="carMove(-1)">‹</button>
+          <button class="car-nav next" onclick="carMove(1)">›</button>
+          <div class="car-dots" id="carDots"></div>
+          <div class="ad-body" style="padding-top:2px;">
+            <button class="btn btn-deal ad-cta" onclick="toast('Opening ShopHub deals…')">🛒 Shop the drop</button>
+          </div>
+        </div>
+
+        <div class="sky-lbl">Sponsored</div>
+        <div class="ad-unit">
+          <div class="ad-hero"><img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=600&q=70" alt="Car"><div class="ov"><b>The 2026 Aurora EV</b></div></div>
+          <div class="ad-body"><p>0–60 in 3.1s. Reserve yours with $0 down and get 3 years free charging.</p><button class="btn btn-primary ad-cta" onclick="toast('Reserving test drive…')">Book a test drive</button></div>
+        </div>
+
+        <div class="sky-lbl">Trending now</div>
+        <div class="ad-unit">
+          <div class="ad-hero"><img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600&q=70" alt="Travel"><div class="ov"><b>Escape to Bali · -40%</b></div></div>
+          <div class="ad-body"><p>7 nights all-inclusive from $899. Flash fares end tonight at midnight.</p><button class="btn btn-deal ad-cta" onclick="toast('Loading travel deals…')">Grab the deal</button></div>
+        </div>
+
+        <div class="sky-lbl">Recommended</div>
+        <div class="ad-unit">
+          <div class="ad-hero"><img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=600&q=70" alt="Gadget"><div class="ov"><b>Next-gen laptops</b></div></div>
+          <div class="ad-body"><p>Save up to $500 on ultrabooks this week only. Free next-day shipping.</p><button class="btn btn-primary ad-cta" onclick="toast('Opening tech store…')">Explore now</button></div>
+        </div>
+      </aside>
+    </section>
+  </div>
+</div>
+
+<!-- ===== READING PANE OVERLAY ===== -->
+<div class="reader" id="reader" onclick="if(event.target===this)closeReader()">
+  <div class="reader-pane" id="readerPane"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- DATA ---------- */
+const avatarColors = ['#0078d4','#b11f4b','#16a34a','#f59e0b','#7c3aed','#0891b2','#db2777'];
+function col(i){ return avatarColors[i % avatarColors.length]; }
+
+const standardMail = [
+  {from:'Microsoft account team', subj:'Unusual sign-in activity', prev:'We detected something unusual about a recent sign-in to the Microsoft account…', time:'10:42 AM', unread:true},
+  {from:'Priya Nair', subj:'Re: Q3 planning deck', prev:'Thanks for the update — I left a few comments on slide 12 about the roadmap…', time:'9:15 AM', unread:true},
+  {from:'GitHub', subj:'[copilot-cli] 3 new pull requests', prev:'Here is your daily digest of activity across repositories you follow…', time:'8:03 AM', unread:false},
+  {from:'LinkedIn', subj:'You appeared in 9 searches this week', prev:'See who is looking at your profile and grow your network…', time:'Yesterday', unread:false},
+  {from:'Dana Whitmore', subj:'Lunch Thursday?', prev:'Are you free around noon? There is a new ramen place near the office…', time:'Yesterday', unread:true},
+  {from:'Notion', subj:'Your weekly workspace summary', prev:'You edited 24 pages this week. Here is what changed across your teams…', time:'Mon', unread:false},
+  {from:'Alex Rivera', subj:'Contract signed ✔', prev:'Great news — the client countersigned this morning. Attaching the final PDF…', time:'Mon', unread:false},
+];
+
+const orders = [
+  {brand:'Nike', lg:'N', lgc:'#111', subj:'Your order has shipped!', prev:'Air Max Pulse · Order #A82931-KX', img:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=70', track:{label:'Out for delivery', pct:82, eta:'Arrives today by 8 PM'}, time:'2h ago'},
+  {brand:'Apple', lg:'', lgc:'#333', subj:'AirPods Pro are on the way', prev:'Order #W1102934 · Ships from Cupertino', img:'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=600&q=70', track:{label:'In transit', pct:54, eta:'Arrives Wed, Aug 20'}, time:'6h ago'},
+  {brand:'IKEA', lg:'I', lgc:'#0058a3', subj:'Delivery scheduled', prev:'MALM desk + KALLAX shelf · 3 items', img:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=70', track:{label:'Preparing', pct:22, eta:'Arrives Fri, Aug 22'}, time:'1d ago'},
+];
+
+const deals = [
+  {brand:'ShopHub', lg:'S', lgc:'#e91e63', subj:'⚡ 20% off just for you', prev:'Your VIP coupon unlocks storewide savings on electronics.', img:'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=70', deal:'-20%', code:'VIP20', countdown:true, time:'New'},
+  {brand:'Steam', lg:'S', lgc:'#1b2838', subj:'Summer Sale ends tonight', prev:'Up to 85% off 4,000+ games. Your wishlist is on sale.', img:'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&q=70', deal:'-85%', code:'', countdown:true, time:'1h ago'},
+  {brand:'Sephora', lg:'S', lgc:'#111', subj:'Beauty Insider: gift with purchase', prev:'Spend $50, get a deluxe 6-piece set free at checkout.', img:'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&q=70', deal:'GIFT', code:'BEAUTY', countdown:false, time:'3h ago'},
+];
+
+const nativeAd = {brand:'MSN Shopping', lg:'M', lgc:'#0078d4', subj:'The gadget everyone is talking about', prev:'The Aura Smart Frame turns your photos into living art. 50k+ sold.', img:'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=600&q=70', sponsored:true, time:'Ad'};
+
+const news = [
+  {brand:'The Verge', lg:'V', lgc:'#5200ff', subj:'This week in tech', prev:'Foldables get thinner, AI gets weirder, and a surprise console reveal.', img:'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=70', time:'7 AM'},
+  {brand:'Morning Brew', lg:'B', lgc:'#0a2540', subj:'☕ Markets, made simple', prev:'Everything you need to know before the opening bell in 5 minutes.', img:'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=70', time:'6 AM'},
+  {brand:'Bon Appétit', lg:'B', lgc:'#e4572e', subj:'12 dinners for busy weeknights', prev:'Fast, cozy, and mostly one-pan. Recipe #4 changed my life.', img:'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=70', time:'Yest'},
+];
+
+// Newsletter emails — rendered as email-like rows (still feel like real mail)
+const newsEmails = [
+  {brand:'Amazon', lg:'a', lgc:'#232f3e', from:'Amazon.com', subj:'Recommended for you based on your recent orders', prev:'Hi Yohnathan, customers who bought your Air Max Pulse also loved these running accessories. Plus, your Subscribe & Save order ships Tuesday.', img:'https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=300&q=70', time:'8:12 AM', unread:true, tags:['Newsletter','Promotions']},
+  {brand:'Best Buy', lg:'B', lgc:'#0046be', from:'Best Buy Deals', subj:"Your weekly Deal of the Day picks are here", prev:'Members-only pricing on laptops, TVs and headphones. This week: save an extra 15% when you check out with your rewards certificate.', img:'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=300&q=70', time:'Yesterday', unread:true, tags:['Newsletter','Weekly']},
+  {brand:'Nike', lg:'N', lgc:'#111', from:'Nike Member News', subj:'New drops just landed in your size', prev:'Because you shop Running: the Pegasus 41 and fresh Member-exclusive colorways are now available. Free shipping on every order.', img:'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=300&q=70', time:'Wed', unread:false, tags:['Newsletter']},
+  {brand:'Airbnb', lg:'A', lgc:'#ff5a5f', from:'Airbnb', subj:'Weekend getaways under $150/night near you', prev:'Handpicked stays for your next trip. Cozy cabins, beach lofts and city apartments — all with great reviews and flexible cancellation.', img:'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=300&q=70', time:'Tue', unread:false, tags:['Newsletter','Travel']},
+];
+
+const bannerSlides = [
+  {img:'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=1200&q=70', k:'Sponsored · Aurora Motors', h:'Drive the future. 2026 Aurora EV.', cta:'Reserve now'},
+  {img:'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1200&q=70', k:'Now streaming · CineMax+', h:'The blockbuster event of the summer.', cta:'Watch trailer'},
+  {img:'https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?w=1200&q=70', k:'Deal of the day · MSN Shopping', h:'Up to 60% off top tech brands.', cta:'Shop now'},
+];
+
+/* ---------- RENDER STANDARD MAIL ---------- */
+function renderStd(){
+  document.getElementById('std-rows').innerHTML = standardMail.map((m,i)=>`
+    <div class="mail-row ${m.unread?'unread':''}" onclick="toast('Opening: ${m.subj.replace(/'/g,'')}')">
+      <div class="mail-av" style="background:${col(i)}">${m.from.split(' ').map(w=>w[0]).slice(0,2).join('')}</div>
+      <div class="mail-main">
+        <div class="mail-line1"><span class="mail-from">${m.from}</span><span class="mail-time">${m.time}</span></div>
+        <div class="mail-subj">${m.subj}</div>
+        <div class="mail-prev">${m.prev}</div>
+      </div>
+    </div>`).join('');
+}
+
+/* ---------- RENDER SHOPPING ---------- */
+function chip(o){ return `<div class="brand-chip"><span class="lg" style="background:${o.lgc}">${o.lg||o.brand[0]}</span>${o.brand}</div>`; }
+
+function orderCard(o,idx){
+  return `<div class="shop-card order-card" onclick='openReader(${JSON.stringify({type:"order",...o}).replace(/'/g,"&#39;")})'>
+    <div class="card-media">${chip(o)}<img src="${o.img}" alt=""></div>
+    <div class="card-body">
+      <div class="card-subj">${o.subj}</div>
+      <div class="card-prev">${o.prev}</div>
+      <div class="track">
+        <div class="track-row"><span>${o.track.label}</span><b>${o.track.pct}%</b></div>
+        <div class="bar"><i style="width:${o.track.pct}%"></i></div>
+        <div class="track-row"><span>🚚 ${o.track.eta}</span></div>
+      </div>
+      <div class="card-foot">
+        <button class="btn btn-primary" onclick="event.stopPropagation();toast('Live tracking opened 📍')">📍 Track Package</button>
+        <span class="time-tag">${o.time}</span>
+      </div>
+    </div></div>`;
+}
+
+function dealCard(o){
+  const cd = o.countdown ? `<div class="countdown">⏳ <span class="u" data-cd>03</span>:<span class="u">42</span>:<span class="u">17</span></div>` : '';
+  const claim = o.code ? `<button class="btn btn-deal" onclick="event.stopPropagation();claim('${o.code}')">🎟️ Claim ${o.deal}</button>` : `<button class="btn btn-deal" onclick="event.stopPropagation();toast('Deal applied!')">🔥 Shop deal</button>`;
+  return `<div class="shop-card" onclick='openReader(${JSON.stringify({type:"deal",...o}).replace(/'/g,"&#39;")})'>
+    <div class="card-media">${chip(o)}<span class="deal-flag">${o.deal}</span><img src="${o.img}" alt=""></div>
+    <div class="card-body">
+      <div class="card-subj">${o.subj}</div>
+      <div class="card-prev">${o.prev}</div>
+      ${cd}
+      <div class="card-foot">${claim}<span class="time-tag">${o.time}</span></div>
+    </div></div>`;
+}
+
+function nativeCard(o){
+  return `<div class="shop-card native" onclick='openReader(${JSON.stringify({type:"native",...o}).replace(/'/g,"&#39;")})'>
+    <span class="sponsor-tag">SPONSORED</span>
+    <div class="card-media">${chip(o)}<img src="${o.img}" alt=""></div>
+    <div class="card-body">
+      <div class="card-subj">${o.subj}</div>
+      <div class="card-prev">${o.prev}</div>
+      <div class="card-foot">
+        <button class="btn btn-deal" onclick="event.stopPropagation();toast('Opening sponsored offer…')">✨ Learn more</button>
+        <span class="time-tag">Ad</span>
+      </div>
+    </div></div>`;
+}
+
+function newsCard(o){
+  return `<div class="shop-card" onclick='openReader(${JSON.stringify({type:"news",...o}).replace(/'/g,"&#39;")})'>
+    <div class="card-media">${chip(o)}<img src="${o.img}" alt=""></div>
+    <div class="card-body">
+      <div class="card-subj">${o.subj}</div>
+      <div class="card-prev">${o.prev}</div>
+      <div class="card-foot">
+        <button class="btn btn-ghost" onclick="event.stopPropagation();toast('Read in full →')">📖 Read</button>
+        <button class="btn btn-ghost" onclick="event.stopPropagation();toast('Unsubscribed ✔')">Unsubscribe</button>
+        <span class="time-tag">${o.time}</span>
+      </div>
+    </div></div>`;
+}
+
+function newsEmailRow(o){
+  return `<div class="email-item ${o.unread?'unread':''}" onclick='openReader(${JSON.stringify({type:"news",...o}).replace(/'/g,"&#39;")})'>
+    <div class="e-av" style="background:${o.lgc}">${o.lg||o.brand[0]}</div>
+    <div class="e-main">
+      <div class="e-l1"><span class="e-from">${o.from}</span><span class="e-time">${o.time}</span></div>
+      <div class="e-subj">${o.subj}</div>
+      <div class="e-prev">${o.prev}</div>
+      <div class="e-tags">${o.tags.map(t=>`<span class="e-tag">${t}</span>`).join('')}</div>
+    </div>
+    <img class="e-thumb" src="${o.img}" alt="">
+  </div>`;
+}
+
+function renderShop(){
+  document.getElementById('orders').innerHTML = orders.map(orderCard).join('');
+  // inject native ad in the middle of deals
+  document.getElementById('deals').innerHTML = dealCard(deals[0]) + dealCard(deals[1]) + nativeCard(nativeAd) + dealCard(deals[2]);
+  document.getElementById('newsEmails').innerHTML = newsEmails.map(newsEmailRow).join('');
+  document.getElementById('news').innerHTML = news.map(newsCard).join('');
+}
+
+/* ---------- BANNER CAROUSEL ---------- */
+let bIdx = 0, bTimer;
+function renderBanner(){
+  const b = document.getElementById('banner');
+  b.querySelectorAll('.slide').forEach(s=>s.remove());
+  bannerSlides.forEach((s,i)=>{
+    const d = document.createElement('div');
+    d.className = 'slide'+(i===0?' on':'');
+    d.innerHTML = `<img src="${s.img}" alt=""><div class="cap"><span class="k">${s.k}</span><span class="h">${s.h}</span><button class="cta" onclick="toast('Ad clicked → ${s.k}')">${s.cta}</button></div>`;
+    b.insertBefore(d, b.querySelector('.play'));
+  });
+  const dots = document.getElementById('bannerDots');
+  dots.innerHTML = bannerSlides.map((_,i)=>`<i class="${i===0?'on':''}" onclick="bGo(${i})"></i>`).join('');
+}
+function bGo(i){
+  bIdx = i;
+  document.querySelectorAll('#banner .slide').forEach((s,j)=>s.classList.toggle('on',j===i));
+  document.querySelectorAll('#bannerDots i').forEach((d,j)=>d.classList.toggle('on',j===i));
+}
+function bNext(){ bGo((bIdx+1)%bannerSlides.length); }
+
+/* ---------- SIDEBAR CAROUSEL ---------- */
+let carIdx = 0; const carCount = 4;
+function carMove(dir){ carGo((carIdx+dir+carCount)%carCount); }
+function carGo(i){
+  carIdx = i;
+  document.getElementById('carTrack').style.transform = `translateX(-${i*100}%)`;
+  document.querySelectorAll('#carDots i').forEach((d,j)=>d.classList.toggle('on',j===i));
+}
+function initCarDots(){
+  document.getElementById('carDots').innerHTML = Array.from({length:carCount}).map((_,i)=>`<i class="${i===0?'on':''}" onclick="carGo(${i})"></i>`).join('');
+}
+
+/* ---------- VIEW SWITCH ---------- */
+function switchView(v){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.view===v));
+  const shop = v==='shop';
+  document.getElementById('std-list').style.display = shop?'none':'flex';
+  document.getElementById('shop-dash').style.display = shop?'flex':'none';
+  document.getElementById('emptyRead').style.display = shop?'none':'flex';
+  document.getElementById('sky').classList.toggle('show', shop);
+  document.getElementById('listcol').classList.toggle('wide', shop);
+  if(!shop && v==='other'){
+    document.querySelector('#std-list .grow').textContent='Other';
+    document.getElementById('std-rows').innerHTML = standardMail.slice(2).map((m,i)=>`
+      <div class="mail-row" onclick="toast('Opening message')"><div class="mail-av" style="background:${col(i+3)}">${m.from.split(' ').map(w=>w[0]).slice(0,2).join('')}</div>
+      <div class="mail-main"><div class="mail-line1"><span class="mail-from">${m.from}</span><span class="mail-time">${m.time}</span></div><div class="mail-subj">${m.subj}</div><div class="mail-prev">${m.prev}</div></div></div>`).join('');
+  } else if(!shop){
+    document.querySelector('#std-list .grow').textContent='Focused';
+    renderStd();
+  }
+}
+
+/* ---------- READING PANE ---------- */
+function openReader(o){
+  const pane = document.getElementById('readerPane');
+  let body = '';
+  if(o.type==='order'){
+    body = `
+      <img class="r-hero" src="${o.img}" alt="">
+      <div class="r-content">
+        <h2>${o.subj}</h2>
+        <p>Hi Yohnathan, good news — your <b>${o.brand}</b> order is on the move. Here's the latest tracking status and your receipt.</p>
+        <div class="track" style="margin:18px 0;">
+          <div class="track-row"><span>${o.track.label}</span><b>${o.track.pct}%</b></div>
+          <div class="bar"><i style="width:${o.track.pct}%"></i></div>
+          <div class="track-row"><span>🚚 ${o.track.eta}</span><span>Order #${(o.prev.match(/#[\w-]+/)||['#—'])[0]}</span></div>
+        </div>
+        <div class="receipt">
+          <div class="rr"><div class="prod"><img src="${o.img}" alt=""><div><b>${o.prev.split('·')[0].trim()}</b><br><span style="color:var(--cp-text-soft);font-size:12px;">Qty 1</span></div></div><div>$129.00</div></div>
+          <div class="rr"><span>Shipping</span><span style="color:var(--cp-success)">FREE</span></div>
+          <div class="rr"><span>Tax</span><span>$10.32</span></div>
+          <div class="rr"><span>Total</span><span>$139.32</span></div>
+        </div>
+        <div class="r-actions">
+          <button class="btn btn-primary r-btn" onclick="toast('Live map tracking 📍')">📍 Track Package</button>
+          <button class="btn btn-ghost r-btn" onclick="toast('Receipt downloaded ⬇')">🧾 View Receipt</button>
+        </div>
+      </div>`;
+  } else if(o.type==='deal'){
+    body = `
+      <img class="r-hero" src="${o.img}" alt="">
+      <div class="r-content">
+        <h2>${o.subj}</h2>
+        <p>Exclusive for you from <b>${o.brand}</b>. ${o.prev} This offer is time-limited — don't miss out.</p>
+        <div style="text-align:center;margin:24px 0;padding:24px;border:2px dashed var(--cp-accent);border-radius:14px;background:var(--cp-accent-soft);">
+          <div style="font-size:13px;color:var(--cp-text-soft);letter-spacing:1px;">YOUR COUPON CODE</div>
+          <div style="font-size:34px;font-weight:900;color:var(--cp-accent);letter-spacing:3px;margin:6px 0;">${o.code||'SHOPNOW'}</div>
+          <div style="font-size:13px;color:var(--cp-text-soft);">${o.deal} off · expires in 03:42:17</div>
+        </div>
+        <div class="r-actions">
+          <button class="btn btn-deal r-btn" onclick="claim('${o.code||'SHOPNOW'}')">🎟️ Claim &amp; Shop</button>
+          <button class="btn btn-ghost r-btn" onclick="toast('Saved to wallet 💳')">💾 Save for later</button>
+        </div>
+      </div>`;
+  } else if(o.type==='native'){
+    body = `
+      <img class="r-hero" src="${o.img}" alt="">
+      <div class="r-content">
+        <div style="display:inline-block;background:rgba(0,0,0,.75);color:#ffd54f;font-size:11px;font-weight:700;padding:3px 9px;border-radius:5px;margin-bottom:10px;">SPONSORED · ${o.brand}</div>
+        <h2>${o.subj}</h2>
+        <p>${o.prev} Rated 4.8★ by over 12,000 shoppers. Free shipping and 30-day returns on all orders this week.</p>
+        <div class="r-actions"><button class="btn btn-deal r-btn" onclick="toast('Redirecting to advertiser…')">🛒 Shop now</button></div>
+        <p style="font-size:11px;margin-top:20px;">You're seeing this ad because you're using the free version of Outlook. <a href="#" style="color:var(--cp-link)" onclick="return false">Go ad-free with Microsoft 365 →</a></p>
+      </div>`;
+  } else {
+    body = `
+      <img class="r-hero" src="${o.img}" alt="">
+      <div class="r-content">
+        <h2>${o.subj}</h2>
+        <p style="font-weight:600;color:var(--cp-text)">From ${o.brand} · ${o.time}</p>
+        <p>${o.prev}</p>
+        <p>Welcome back to your weekly edition. In this issue we round up the stories, ideas and deals our editors loved most — curated just for you.</p>
+        <p style="border-left:3px solid var(--cp-accent);padding-left:14px;font-style:italic;">"The best newsletter is the one you actually read." — keep scrolling for the good stuff.</p>
+        <div class="r-actions"><button class="btn btn-primary r-btn" onclick="toast('Opened full article')">📖 Read online</button><button class="btn btn-ghost r-btn" onclick="toast('Unsubscribed ✔')">Unsubscribe</button></div>
+      </div>`;
+  }
+  pane.innerHTML = `
+    <div class="reader-top">
+      <div class="mail-av" style="background:${o.lgc||'#0078d4'};width:38px;height:38px;">${o.lg||o.brand[0]}</div>
+      <div class="r-subj">${o.brand}</div>
+      <button class="reader-close" onclick="closeReader()" title="Reply">↩️</button>
+      <button class="reader-close" onclick="closeReader()" title="Archive">🗑️</button>
+      <button class="reader-close" onclick="closeReader()" title="Close">✕</button>
+    </div>
+    <div class="reader-body">${body}</div>`;
+  document.getElementById('reader').classList.add('open');
+}
+function closeReader(){ document.getElementById('reader').classList.remove('open'); }
+
+/* ---------- HELPERS ---------- */
+let toastTimer;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+function claim(code){
+  navigator.clipboard && navigator.clipboard.writeText(code).catch(()=>{});
+  toast('🎉 Code '+code+' copied — 20% applied at checkout!');
+}
+
+/* live countdown ticker */
+function tickCountdown(){
+  document.querySelectorAll('[data-cd]').forEach(el=>{
+    let s = parseInt(el.textContent,10); s = s>0? s-1 : 59;
+    el.textContent = String(s).padStart(2,'0');
+  });
+}
+
+/* keyboard: Esc closes reader */
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeReader(); });
+
+/* ---------- INIT ---------- */
+renderStd();
+renderShop();
+renderBanner();
+initCarDots();
+setInterval(bNext, 4500);
+setInterval(()=>carMove(1), 5000);
+setInterval(tickCountdown, 1000);
+</script>
+</body>
+</html>
